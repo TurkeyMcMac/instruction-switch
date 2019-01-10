@@ -2,4 +2,9 @@ load "instruction.rb"
 load "table.rb"
 load "parser.rb"
 
-puts Parser.new(read_table(STDIN), {}, 0).generate
+begin
+  puts Parser.new(read_table("../instructions.tsv"), {}).generate
+rescue AmbiguousCases => e
+  STDERR.puts "instrswitch: Error: #{e}"
+  exit 1
+end

@@ -1,8 +1,8 @@
-def read_table(file)
-  [
-    Instruction.new("00______"),
-    Instruction.new("11______"),
-    Instruction.new("10_1____"),
-    Instruction.new("10_0____"),
-  ]
+def read_table(path)
+  lines = File.open(path).read.lines
+  lines.shift
+  lines.each_with_index.map { |line, i|
+    cells = line.split("\t")
+    name, format = cells[0], cells[1].strip
+    Instruction.new(name, format, i + 1)}
 end

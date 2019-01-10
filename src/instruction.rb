@@ -1,9 +1,12 @@
 class Instruction
-  def initialize(str)
+  def initialize(name, format, lineno)
+    @name = name
+    @format = format
+    @lineno = lineno
     @template = 0
     @bits = 0
-    str.chars.each_with_index.each do |char, i|
-      bit = 1 << (7 - i)
+    format.chars.each_with_index.each do |char, i|
+      bit = 1 << (15 - i)
       case char
       when '1'
         @bits |= bit
@@ -20,5 +23,9 @@ class Instruction
 
   def bits
     @bits
+  end
+
+  def to_s
+    "<Instruction '#{@name}' {#{@format}} (line #{@lineno})>"
   end
 end
