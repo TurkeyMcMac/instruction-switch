@@ -16,14 +16,15 @@ class Parser
     instructions.each_with_index.each do |instr, i|
       @common &= instr.template
       if @common == 0
-        other = instructions[0..i].find { |other| instr.bits ^ other.bits  == 0 }
+        other = instructions[0..i].find { |other|
+          instr.template & other.template == 0 }
         raise AmbiguousCases.new(instr, other)
       end
     end
     instructions.permutation(2).each do |instrs|
       instr1 = instrs[0]
       instr2 = instrs[1]
-      if (instr1.bits ^ instr2.bits) == 0
+      if (instr1.bits ^ instr2.bits) & (instr1.template & instr2.template) == 0
         raise AmbiguousCases.new(instr2, instr1)
       end
     end
