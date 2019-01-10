@@ -14,10 +14,6 @@ class Parser
     @settings = settings
     @common = ~0
     instructions.each_with_index.each do |instr, i|
-      if @common < -1
-        # FIXME: Why is this necessary?
-        @common = ~@common
-      end
       @common &= instr.template
       if @common == 0
         other = instructions[0..i].find { |other| instr.bits ^ other.bits  == 0 }
