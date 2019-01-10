@@ -4,5 +4,5 @@ def read_table(path)
   lines.each_with_index.map { |line, i|
     cells = line.split("\t")
     name, format = cells[0], cells[1].strip
-    Instruction.new(name, format, i + 1)}
+    Instruction.new(name, format, i + 2)}
 end
