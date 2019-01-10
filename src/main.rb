@@ -2,8 +2,12 @@ load "instruction.rb"
 load "table.rb"
 load "parser.rb"
 
+settings = {
+  number_base: 2,
+}
+
 begin
-  puts Parser.new(read_table("../instructions.tsv"), {}).generate
+  puts Parser.new(read_table("../instructions.tsv"), settings).generate
 rescue AmbiguousCases => e
   STDERR.puts "instrswitch: Error: #{e}"
   exit 1

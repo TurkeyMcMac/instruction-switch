@@ -74,19 +74,34 @@ class Parser
   end
 
   def gen_switch_arg
-    "#{gen_arg}&0x#{@common.to_s(2)}"
+    "#{gen_arg}&#{num(@common)}"
   end
 
   def gen_child_cases
     @children.map { |bits, child|
-      "case 0x#{(bits & @common).to_s(2)}: #{child.send(:print_child)}" }.join
+      "case #{num(bits & @common)}: #{child.send(:print_child)}" }.join
   end
 
   def gen_return
-    "return 0x#{@common.to_s(2)};"
+    "return #{num(@common)};"
   end
 
   def gen_default
     "default:return -1;"
+  end
+
+  def num(n)
+    base = @settings[:number_base]
+    base_prefix = case base
+    when 2
+      "0b"
+    when 8
+      "0"
+    when 16
+      "0x"
+    else
+      ""
+    end
+    "#{base_prefix}#{n.to_s(base)}"
   end
 end
