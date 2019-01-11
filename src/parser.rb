@@ -73,7 +73,7 @@ class Parser
   end
 
   def gen_switch(body)
-    "switch (#{gen_switch_arg}){#{body}};"
+    "switch(#{gen_switch_arg}){#{body}}"
   end
 
   def gen_switch_arg
@@ -82,7 +82,7 @@ class Parser
 
   def gen_child_cases
     @children.map { |bits, child|
-      "case #{num(bits & @common)}: #{child.send(:print_child)}" }.join
+      "case #{num(bits & @common)}:#{child.send(:print_child)}" }.join
   end
 
   def gen_return
