@@ -29,7 +29,7 @@ class Parser
       end
     end
     if instructions.length <= 1
-      @children = [nil]
+      @children = instructions
       return
     end
     children = {}
@@ -58,8 +58,14 @@ class Parser
   end
 
   def print_child
-    @children.length <= 1 ? gen_return
-      : gen_switch("#{gen_child_cases} #{gen_default}")
+    case @children.length
+    when 0
+      ""
+    when 1
+      gen_return
+    else
+      gen_switch("#{gen_child_cases} #{gen_default}")
+    end
   end
 
   def gen_arg
@@ -80,7 +86,11 @@ class Parser
   end
 
   def gen_return
-    "return #{num(@common)};"
+    instr = @children[0]
+    params = instr.params
+    "do_instr_#{instr.name}(#{
+      instr.params.map{ |p| gen_get_arg(p) }.join(',')
+    });return;"
   end
 
   def gen_default
@@ -100,5 +110,9 @@ class Parser
       ""
     end
     "#{base_prefix}#{n.to_s(base)}"
+  end
+
+  def gen_get_arg(param)
+    "parm"
   end
 end

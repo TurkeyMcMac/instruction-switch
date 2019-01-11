@@ -28,4 +28,12 @@ class Instruction
   def to_s
     "<Instruction '#{@name}' {#{@format}} (line #{@lineno})>"
   end
+
+  def params
+    @params
+  end
+
+  def name
+    @name
+  end
 end

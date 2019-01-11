@@ -3,7 +3,7 @@ load "table.rb"
 load "parser.rb"
 
 settings = {
-  number_base: 2,
+  number_base: 16,
 }
 
 begin
