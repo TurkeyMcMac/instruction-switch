@@ -5,6 +5,7 @@ class Instruction
     @lineno = lineno
     @template = 0
     @bits = 0
+    @params = []
     format.chars.each_with_index.each do |char, i|
       bit = 1 << (15 - i)
       case char
