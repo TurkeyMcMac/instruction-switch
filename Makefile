@@ -1,10 +1,10 @@
 executable = instrswitch
 
-main = instrswitch.rb
-other-sources = src/*.rb
+main = src/main.rb
+sources = src/*.rb
 
-$(executable): $(main) $(other-sources)
-	awk -f generate-executable.awk $< > $@ && chmod +x $@
+$(executable): $(sources)
+	awk -f generate-executable.awk $(main) > $@ && chmod +x $@
 
 .PHONY: clean
 clean:

@@ -9,7 +9,7 @@ BEGIN {
 /^load ".+"$/ {
 	path = substr($0, 7, length($0) - 7);
 	print("# LOADED FILE: " path);
-	system("cat " path);
+	system("cat src/" path);
 	next;
 }
 
