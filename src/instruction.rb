@@ -1,5 +1,5 @@
 class Instruction
-  def initialize(name, format, lineno)
+  def initialize(name:, format:, lineno:, size:)
     @name = name
     @format = format
     @lineno = lineno
@@ -9,7 +9,7 @@ class Instruction
     params = {}
     param_name = nil
     format.chars.each_with_index.each do |char, progress|
-      idx = 15 - progress
+      idx = size - 1 - progress
       bit = 1 << idx
       if char == param_name
         params[param_name].last[:end] = idx
