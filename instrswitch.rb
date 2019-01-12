@@ -1,7 +1,7 @@
-load "exception.rb"
-load "instruction.rb"
-load "table.rb"
-load "parser.rb"
+load "src/exception.rb"
+load "src/instruction.rb"
+load "src/table.rb"
+load "src/parser.rb"
 
 settings = {
   number_base: 16,
