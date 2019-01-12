@@ -1,13 +1,23 @@
 def read_table(path)
-  lines = File.open(path).read.lines
-  lines.shift
-  lines.map! { |line|
-    cells = line.split("\t")
-    cells[1].strip!
-    cells }
+  lines = File.open(path).read.lines.map { |line| line.strip.split("\t") }
+  raise FixableException.new("Empty instruction table.") if lines.length <= 1
+  header = lines.shift
+  n_columns = header.length
+  name_col = format_col = nil
+  header.each_with_index.each do |column, i|
+    case column.strip.upcase
+    when 'NAME'
+      name_col = i
+    when 'FORMAT'
+      format_col = i
+    end
+  end
+  raise FixableException.new("No 'name' column.") unless defined? name_col
+  raise FixableException.new("No 'format' column.") unless defined? format_col
+  header.last.strip!
   size = 0
   lines.each do |cells|
-    len = cells[1].length
+    len = cells[format_col].length
     if len > 64
     end
     if size < len
@@ -24,8 +34,8 @@ def read_table(path)
       "Invalid instruction size. Must be from 1 to 64 (inclusive.)")
   end
   lines.each_with_index.map { |cells, i| Instruction.new(
-    name: cells[0],
-    format: cells[1],
+    name: cells[name_col],
+    format: cells[format_col],
     lineno: i + 2,
     size: size) }
 end
