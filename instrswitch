@@ -1,0 +1,257 @@
+#!/usr/bin/env ruby
+# This file is an automatically generated concatenation of
+# several source files whose names are indicated by comments
+# starting with 'LOADED FILE'.
+
+# LOADED FILE: exception.rb
+class FixableException < RuntimeError
+  def initialize(message)
+    @message = message
+  end
+
+  def to_s
+    @message
+  end
+end
+# LOADED FILE: instruction.rb
+class Instruction
+  def initialize(name:, format:, lineno:, size:)
+    @name = name
+    @format = format
+    @lineno = lineno
+    @template = 0
+    @bits = 0
+    @params = []
+    params = {}
+    param_name = nil
+    format.chars.each_with_index.each do |char, progress|
+      idx = size - 1 - progress
+      bit = 1 << idx
+      if char == param_name
+        params[param_name].last[:end] = idx
+      else
+        param_name = nil
+        case char
+        when '1'
+          @bits |= bit
+          @template |= bit
+        when '0'
+          @template |= bit
+        when '_', ' '
+          # Do nothing
+        else
+          new_param = {
+            start: idx + 1,
+            end: idx,
+          }
+          param_name = char
+          if params[param_name]
+            params[param_name].push(new_param)
+          else
+            params[param_name] = [new_param]
+            @params.push(param_name)
+          end
+        end
+      end
+    end
+    @params.map! { |name| params[name] }
+  end
+
+  def template
+    @template
+  end
+
+  def bits
+    @bits
+  end
+
+  def to_s
+    "<Instruction '#{@name}' {#{@format}} (line #{@lineno})>"
+  end
+
+  def params
+    @params
+  end
+
+  def name
+    @name
+  end
+end
+# LOADED FILE: table.rb
+def read_table(path)
+  lines = File.open(path).read.lines
+  lines.shift
+  lines.map! { |line|
+    cells = line.split("\t")
+    cells[1].strip!
+    cells }
+  size = 0
+  lines.each do |cells|
+    len = cells[1].length
+    if len > 64
+    end
+    if size < len
+      size = len
+    end
+  end
+  size = case size
+  when  1.. 8 then  8
+  when  9..16 then 16
+  when 17..32 then 32
+  when 33..64 then 64
+  else
+    raise FixableException.new(
+      "Invalid instruction size. Must be from 1 to 64 (inclusive.)")
+  end
+  lines.each_with_index.map { |cells, i| Instruction.new(
+    name: cells[0],
+    format: cells[1],
+    lineno: i + 2,
+    size: size) }
+end
+# LOADED FILE: parser.rb
+class Parser
+  public
+
+  def self.create(instructions, settings)
+    instructions.permutation(2).each do |instrs|
+      instr1 = instrs[0]
+      instr2 = instrs[1]
+      if (instr1.bits ^ instr2.bits) & (instr1.template & instr2.template) == 0
+        raise FixableException.new([
+          "Undecideable switch cases due to case #{instr2},",
+          "indistinguishable from #{instr1}",
+        ].join(' '))
+      end
+    end
+    Parser.send(:new, instructions, settings)
+  end
+
+  def generate
+    gen_func_wrapper(print_child)
+  end
+
+  private
+
+  private_class_method :new
+
+  def initialize(instructions, settings)
+    @settings = settings
+    if instructions.length <= 1
+      @children = instructions
+      return
+    end
+    @common = ~0
+    instructions.each_with_index.each do |instr, i|
+      @common &= instr.template
+    end
+    children = {}
+    instructions.each do |instr|
+      bits = instr.bits & @common
+      group = children[bits]
+      if (group)
+        group.push(instr)
+      else
+        children[bits] = [instr]
+      end
+    end
+    @children = children.map { |bits, group|
+      [bits, Parser.send(:new, group, settings)] }.to_h
+  end
+
+  def gen_func_wrapper(body)
+    do_instr = @settings[:do_instr]
+    do_error = @settings[:do_error]
+    return <<~C_CODE
+      #if !defined(#{do_instr})
+      #error macro #{do_instr} not defined
+      #elif !defined(#{do_error})
+      #error macro #{do_error} not defined
+      #else
+      #{body}
+      #endif
+    C_CODE
+  end
+
+  def print_child
+    case @children.length
+    when 0
+      ""
+    when 1
+      gen_return
+    else
+      gen_switch("#{gen_child_cases} #{gen_default}")
+    end
+  end
+
+  def gen_arg
+    @settings[:function_argument] ? @settings[:function_argument] : "instr__"
+  end
+
+  def gen_switch(body)
+    "switch(#{gen_switch_arg}){#{body}}"
+  end
+
+  def gen_switch_arg
+    "#{gen_arg}&#{num(@common)}"
+  end
+
+  def gen_child_cases
+    @children.map { |bits, child|
+      "case #{num(bits & @common)}:#{child.send(:print_child)}" }.join
+  end
+
+  def gen_return
+    instr = @children[0]
+    params = instr.params
+    "#{@settings[:do_instr]}(#{instr.name},(#{
+      instr.params.map{ |p| gen_get_arg(p) }.join(',')
+    }));break;"
+  end
+
+  def gen_default
+    "default:#{@settings[:do_error]};"
+  end
+
+  def num(n)
+    base = @settings[:number_base]
+    base_prefix = case base
+    when 2
+      "0b"
+    when 8
+      "0"
+    when 16
+      "0x"
+    else
+      ""
+    end
+    "#{base_prefix}#{n.to_s(base)}"
+  end
+
+  def gen_get_arg(param)
+    instr = @children[0]
+    push_top = 0
+    arg = []
+    param.reverse.each do |area|
+      mask = (1 << area[:start]) - 1
+      mask ^= (1 << area[:end]) - 1
+      expr = "((#{gen_arg}&#{num(mask)})>>#{area[:end] - push_top})"
+      push_top += area[:start] - area[:end]
+      arg.push(expr)
+    end
+    arg.join('|')
+  end
+end
+
+settings = {
+  number_base: 16,
+  do_instr: "DO_INSTR_",
+  do_error: "DO_ERROR_",
+}
+
+begin
+  puts Parser.create(read_table(ARGV[0]), settings).generate
+rescue FixableException => e
+  STDERR.puts "instrswitch: #{e}"
+  exit 1
+end
