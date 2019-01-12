@@ -123,6 +123,16 @@ class Parser
   end
 
   def gen_get_arg(param)
-    "parm"
+    instr = @children[0]
+    push_top = 0
+    arg = []
+    param.reverse.each do |area|
+      mask = (1 << area[:start]) - 1
+      mask ^= (1 << area[:end]) - 1
+      expr = "((#{gen_arg}&#{num(mask)})>>#{area[:end] - push_top})"
+      push_top += area[:start] - area[:end]
+      arg.push(expr)
+    end
+    arg.join('|')
   end
 end

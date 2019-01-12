@@ -25,7 +25,7 @@ class Instruction
           # Do nothing
         else
           new_param = {
-            start: idx,
+            start: idx + 1,
             end: idx,
           }
           param_name = char
