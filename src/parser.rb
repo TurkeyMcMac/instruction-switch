@@ -100,7 +100,7 @@ class Parser
     params = instr.params
     "#{@settings[:do_instr]}(#{instr.name},(#{
       instr.params.map{ |p| gen_get_arg(p) }.join(',')
-    }));return;"
+    }));break;"
   end
 
   def gen_default
