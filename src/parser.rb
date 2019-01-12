@@ -1,12 +1,3 @@
-class AmbiguousCases < RuntimeError
-  def initialize(instr1, instr2)
-    @str = "Undecideable switch cases due to case #{instr1}, indistinguishable from #{instr2}"
-  end
-  def to_s
-    @str
-  end
-end
-
 class Parser
   public
 
@@ -15,7 +6,10 @@ class Parser
       instr1 = instrs[0]
       instr2 = instrs[1]
       if (instr1.bits ^ instr2.bits) & (instr1.template & instr2.template) == 0
-        raise AmbiguousCases.new(instr2, instr1)
+        raise FixableException.new([
+          "Undecideable switch cases due to case #{instr2},",
+          "indistinguishable from #{instr1}",
+        ].join(' '))
       end
     end
     Parser.send(:new, instructions, settings)

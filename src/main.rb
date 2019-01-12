@@ -1,3 +1,4 @@
+load "exception.rb"
 load "instruction.rb"
 load "table.rb"
 load "parser.rb"
@@ -10,7 +11,7 @@ settings = {
 
 begin
   puts Parser.create(read_table(ARGV[0]), settings).generate
-rescue AmbiguousCases => e
-  STDERR.puts "instrswitch: Error: #{e}"
+rescue FixableException => e
+  STDERR.puts "instrswitch: #{e}"
   exit 1
 end
