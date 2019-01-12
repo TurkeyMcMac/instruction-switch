@@ -10,17 +10,7 @@ end
 class Parser
   public
 
-  def initialize(instructions, settings)
-    @settings = settings
-    @common = ~0
-    instructions.each_with_index.each do |instr, i|
-      @common &= instr.template
-      if @common == 0
-        other = instructions[0..i].find { |other|
-          instr.template & other.template == 0 }
-        raise AmbiguousCases.new(instr, other)
-      end
-    end
+  def self.create(instructions, settings)
     instructions.permutation(2).each do |instrs|
       instr1 = instrs[0]
       instr2 = instrs[1]
@@ -28,9 +18,26 @@ class Parser
         raise AmbiguousCases.new(instr2, instr1)
       end
     end
+    Parser.send(:new, instructions, settings)
+  end
+
+  def generate
+    gen_func_wrapper(print_child)
+  end
+
+  private
+
+  private_class_method :new
+
+  def initialize(instructions, settings)
+    @settings = settings
     if instructions.length <= 1
       @children = instructions
       return
+    end
+    @common = ~0
+    instructions.each_with_index.each do |instr, i|
+      @common &= instr.template
     end
     children = {}
     instructions.each do |instr|
@@ -43,14 +50,8 @@ class Parser
       end
     end
     @children = children.map { |bits, group|
-      [bits, Parser.new(group, settings)] }.to_h
+      [bits, Parser.send(:new, group, settings)] }.to_h
   end
-
-  def generate
-    gen_func_wrapper(print_child)
-  end
-  
-  private
 
   def gen_func_wrapper(body)
     do_instr = @settings[:do_instr]
