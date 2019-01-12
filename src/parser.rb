@@ -53,7 +53,6 @@ class Parser
   private
 
   def gen_func_wrapper(body)
-    proto = @settings[:prototype] || "static int instrswitch(unsigned long #{gen_arg})"
     do_instr = @settings[:do_instr]
     do_error = @settings[:do_error]
     return <<~C_CODE
@@ -62,7 +61,7 @@ class Parser
       #elif !defined(#{do_error})
       #error macro #{do_error} not defined
       #else
-      #{proto}{#{body}}
+      #{body}
       #endif
     C_CODE
   end
