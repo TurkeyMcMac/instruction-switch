@@ -1,0 +1,5 @@
+This example demonstrates the use of this program to parse UTF-8. There are
+better ways to do this, but this just meant as an example.
+
+To build the example, run make. When running the example, provide it a utf-8
+encoded character and it will return the hexidecimal codepoint.

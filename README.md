@@ -40,3 +40,6 @@ But it would be illegal to add:
 neg<TAB>1aaa1111
 ```
 Because their is no way to tell between the `sub` and `neg` instructions.
+
+## Examples
+After you have built the program, there is an example of its usage in `examples/utf8`.

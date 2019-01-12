@@ -1,0 +1,7 @@
+#if !defined(DO_INSTR_)
+#error macro DO_INSTR_ not defined
+#elif !defined(DO_ERROR_)
+#error macro DO_ERROR_ not defined
+#else
+switch(instr__&0x80000000){case 0x0:DO_INSTR_(1_byte,(((instr__&0x7f000000)>>24)));break;case 0x80000000:switch(instr__&0xe0c00000){case 0xc0800000:DO_INSTR_(2_bytes,(((instr__&0x3f0000)>>16)|((instr__&0x1f000000)>>18)));break;case 0xe0800000:switch(instr__&0xf0c0c000){case 0xe0808000:DO_INSTR_(3_bytes,(((instr__&0x3f00)>>8)|((instr__&0x3f0000)>>10)|((instr__&0xf000000)>>12)));break;case 0xf0808000:DO_INSTR_(4_bytes,(((instr__&0x3f)>>0)|((instr__&0x3f00)>>2)|((instr__&0x3f0000)>>4)|((instr__&0x7000000)>>6)));break; default:DO_ERROR_;} default:DO_ERROR_;} default:DO_ERROR_;}
+#endif
