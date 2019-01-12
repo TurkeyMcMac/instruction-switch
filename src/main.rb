@@ -9,7 +9,7 @@ settings = {
 }
 
 begin
-  puts Parser.create(read_table("../instructions.tsv"), settings).generate
+  puts Parser.create(read_table(ARGV[0]), settings).generate
 rescue AmbiguousCases => e
   STDERR.puts "instrswitch: Error: #{e}"
   exit 1
