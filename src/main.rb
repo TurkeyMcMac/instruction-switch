@@ -4,6 +4,8 @@ load "parser.rb"
 
 settings = {
   number_base: 16,
+  do_instr: "DO_INSTR_",
+  do_error: "DO_ERROR_",
 }
 
 begin

@@ -54,7 +54,17 @@ class Parser
 
   def gen_func_wrapper(body)
     proto = @settings[:prototype] || "static int instrswitch(unsigned long #{gen_arg})"
-    return "#{proto}{#{body}}"
+    do_instr = @settings[:do_instr]
+    do_error = @settings[:do_error]
+    return <<~C_CODE
+      #if !defined(#{do_instr})
+      #error macro #{do_instr} not defined
+      #elif !defined(#{do_error})
+      #error macro #{do_error} not defined
+      #else
+      #{proto}{#{body}}
+      #endif
+    C_CODE
   end
 
   def print_child
@@ -88,13 +98,13 @@ class Parser
   def gen_return
     instr = @children[0]
     params = instr.params
-    "do_instr_#{instr.name}(#{
+    "#{@settings[:do_instr]}(#{instr.name},(#{
       instr.params.map{ |p| gen_get_arg(p) }.join(',')
-    });return;"
+    }));return;"
   end
 
   def gen_default
-    "default:return -1;"
+    "default:#{@settings[:do_error]};"
   end
 
   def num(n)
