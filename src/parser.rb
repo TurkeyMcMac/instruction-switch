@@ -73,7 +73,7 @@ class Parser
   end
 
   def gen_arg
-    @settings[:function_argument] ? @settings[:function_argument] : "instr__"
+    @settings[:argument]
   end
 
   def gen_switch(body)

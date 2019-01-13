@@ -12,7 +12,7 @@ mv instrswitch <a location in your $PATH>
 ### Generation
 Call the executable with the form
 ```
-instrswitch <instruction table> > <destination>
+instrswitch -i <instruction table> > -o <destination>
 ```
 where the instruction table is a TSV file in the following format:
 ```

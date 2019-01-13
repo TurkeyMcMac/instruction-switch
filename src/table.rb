@@ -1,5 +1,8 @@
-def read_table(path)
-  lines = File.open(path).read.lines.map { |line| line.strip.split("\t") }
+def read_table(file)
+  if file.is_a? String
+    file = File.open(file)
+  end
+  lines = file.read.lines.map { |line| line.strip.split("\t") }
   raise FixableException.new("Empty instruction table.") if lines.length <= 1
   header = lines.shift
   n_columns = header.length

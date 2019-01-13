@@ -7,4 +7,4 @@ $(executable): $(program) $(switch)
 	$(CC) -o $(executable) $(program)
 
 $(switch): $(table)
-	../../instrswitch $(table) > $(switch)
+	../../instrswitch -i $(table) -o $(switch)
