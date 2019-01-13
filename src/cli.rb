@@ -2,8 +2,6 @@ require "optparse"
 
 def get_settings(argv)
   version = [0,0,1]
-  description = <<~DESCRIPTION
-  DESCRIPTION
 
   settings = {
     input_file: STDIN,
