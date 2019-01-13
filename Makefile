@@ -2,9 +2,8 @@ executable = instrswitch
 install-dest = $(HOME)/bin
 
 main = src/main.rb
-sources = src/*.rb
 
-$(executable): $(sources)
+$(executable): $(main)
 	awk -f generate-executable.awk $(main) > $@ && chmod +x $@
 
 .PHONY: install
