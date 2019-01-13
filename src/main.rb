@@ -4,16 +4,15 @@ load "table.rb"
 load "parser.rb"
 load "cli.rb"
 
-settings = get_settings(ARGV)
-
 begin
+  settings = get_settings(ARGV)
   code = Parser.create(read_table(settings[:input_file]), settings).generate
   output = settings[:output_file]
   if output.is_a? String
     output = File.open(output, "w")
   end
   output.puts(code)
-rescue FixableException => e
-  STDERR.puts "instrswitch: #{e}"
+rescue FixableException, OptionParser::InvalidArgument => e
+  STDERR.puts "#{$0}: #{e}"
   exit 1
 end

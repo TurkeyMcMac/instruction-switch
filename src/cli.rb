@@ -28,12 +28,12 @@ def get_settings(argv)
       settings[:output_file] = file
     end
 
-    opts.on("--base N", Integer,
+    opts.on("--base N", ["2", "8", "10", "16"],
             "Print numbers in base N. The valid values are 2, 8, 10, and 16.",
             "Keep in mind that base 2 number literals are not standard in C.",
             "The default value is 16."
     ) do |base|
-      settings[:number_base] = base
+      settings[:number_base] = base.to_i
     end
 
     opts.on("--do-instr SYMBOL",
