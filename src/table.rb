@@ -17,7 +17,6 @@ def read_table(file)
   end
   raise FixableException.new("No 'name' column.") unless defined? name_col
   raise FixableException.new("No 'format' column.") unless defined? format_col
-  header.last.strip!
   size = 0
   lines.each do |cells|
     len = cells[format_col].length
