@@ -86,7 +86,7 @@ class Parser
 
   def gen_child_cases
     @children.map { |bits, child|
-      "case #{num(bits & @common)}:#{child.send(:print_child)}" }.join
+      "case #{num(bits & @common)}:#{child.send(:print_child)}break;" }.join
   end
 
   def gen_return
@@ -94,11 +94,11 @@ class Parser
     params = instr.params
     "#{@settings[:do_instr]}(#{instr.name},(#{
       instr.params.map{ |p| gen_get_arg(p) }.join(',')
-    }));break;"
+    }));"
   end
 
   def gen_default
-    "default:#{@settings[:do_error]};"
+    "default:#{@settings[:do_error]};break;"
   end
 
   def num(n)

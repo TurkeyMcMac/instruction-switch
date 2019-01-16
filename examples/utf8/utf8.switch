@@ -3,5 +3,5 @@
 #elif !defined(DO_ERROR_)
 #error macro DO_ERROR_ not defined
 #else
-switch(INSTR_&0x80000000){case 0x0:DO_INSTR_(1_byte,(((INSTR_&0x7f000000)>>24)));break;case 0x80000000:switch(INSTR_&0xe0c00000){case 0xc0800000:DO_INSTR_(2_bytes,(((INSTR_&0x3f0000)>>16)|((INSTR_&0x1f000000)>>18)));break;case 0xe0800000:switch(INSTR_&0xf0c0c000){case 0xe0808000:DO_INSTR_(3_bytes,(((INSTR_&0x3f00)>>8)|((INSTR_&0x3f0000)>>10)|((INSTR_&0xf000000)>>12)));break;case 0xf0808000:DO_INSTR_(4_bytes,(((INSTR_&0x3f)>>0)|((INSTR_&0x3f00)>>2)|((INSTR_&0x3f0000)>>4)|((INSTR_&0x7000000)>>6)));break; default:DO_ERROR_;} default:DO_ERROR_;} default:DO_ERROR_;}
+switch(INSTR_&0x80000000){case 0x0:DO_INSTR_(1_byte,(((INSTR_&0x7f000000)>>24)));break;case 0x80000000:switch(INSTR_&0xe0c00000){case 0xc0800000:DO_INSTR_(2_bytes,(((INSTR_&0x3f0000)>>16)|((INSTR_&0x1f000000)>>18)));break;case 0xe0800000:switch(INSTR_&0xf0c0c000){case 0xe0808000:DO_INSTR_(3_bytes,(((INSTR_&0x3f00)>>8)|((INSTR_&0x3f0000)>>10)|((INSTR_&0xf000000)>>12)));break;case 0xf0808000:DO_INSTR_(4_bytes,(((INSTR_&0x3f)>>0)|((INSTR_&0x3f00)>>2)|((INSTR_&0x3f0000)>>4)|((INSTR_&0x7000000)>>6)));break; default:DO_ERROR_;break;}break; default:DO_ERROR_;break;}break; default:DO_ERROR_;break;}
 #endif
