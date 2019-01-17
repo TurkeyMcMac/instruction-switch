@@ -1,4 +1,6 @@
 class Instruction
+  attr_reader :template, :bits, :params, :name
+
   def initialize(name:, format:, lineno:, size:)
     @name = name
     @format = format
@@ -41,23 +43,7 @@ class Instruction
     @params.map! { |name| params[name] }
   end
 
-  def template
-    @template
-  end
-
-  def bits
-    @bits
-  end
-
   def to_s
     "<Instruction '#{@name}' {#{@format}} (line #{@lineno})>"
-  end
-
-  def params
-    @params
-  end
-
-  def name
-    @name
   end
 end
