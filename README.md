@@ -12,11 +12,12 @@ make install
 
 If you can't use make and/or awk, here are the manual steps:
  1. copy `src/main.rb` to the file `instrswitch`
- 2. Look through the new file and replace all file names which are arguments to
+ 2. Put the shebang or whatever at the file beginning: `#!/usr/bin/env ruby`
+ 3. Look through the new file and replace all file names which are arguments to
     `load` statements with the absolute paths to those files (they are all in
     the `src` directory)
- 3. Make the new file executable using `chmod +x instrswitch` or something
- 4. Copy `instrswitch` to a directory in your PATH
+ 4. Make the new file executable using `chmod +x instrswitch` or something
+ 5. Copy `instrswitch` to a directory in your PATH
 
 ## Usage
 ### Generation
