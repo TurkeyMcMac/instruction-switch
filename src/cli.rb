@@ -59,6 +59,12 @@ def get_settings(argv)
       settings[:argument] = symbol
     end
 
+    opts.on("--instr-prefix PREFIX",
+            "Prefix the argument list to each instruction call with PREFIX."
+    ) do |prefix|
+      settings[:instr_prefix] = prefix
+    end
+
     opts.on_tail("-h", "--help", "Print this help information and exit.") do
       puts opts
       exit

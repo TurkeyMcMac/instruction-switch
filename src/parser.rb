@@ -92,8 +92,17 @@ class Parser
   def gen_return
     instr = @children[0]
     params = instr.params
-    "#{@settings[:do_instr]}(#{instr.name},(#{
-      instr.params.map{ |p| gen_get_arg(p) }.join(',')
+    args = instr.params.map{ |p| gen_get_arg(p) }
+    if @settings[:instr_prefix]
+      prefix = @settings[:instr_prefix]
+      unless args.empty?
+        prefix += ","
+      end
+    else
+      prefix = nil
+    end
+    "#{@settings[:do_instr]}(#{instr.name},(#{prefix}#{
+      args.join(',')
     }));"
   end
 
