@@ -2,9 +2,7 @@ class Parser
   public
 
   def self.create(instructions, settings)
-    instructions.permutation(2).each do |instrs|
-      instr1 = instrs[0]
-      instr2 = instrs[1]
+    instructions.permutation(2).each do |instr1, instr2|
       if (instr1.bits ^ instr2.bits) & (instr1.template & instr2.template) == 0
         raise FixableException.new([
           "Undecideable switch cases due to case #{instr2},",
@@ -12,7 +10,7 @@ class Parser
         ].join(' '))
       end
     end
-    Parser.send(:new, instructions, settings)
+    Parser.send(:new, instructions, settings, 0)
   end
 
   def generate
@@ -23,10 +21,10 @@ class Parser
 
   private_class_method :new
 
-  def initialize(instructions, settings)
+  def initialize(instructions, settings, parent_common)
     @settings = settings
-    if instructions.length <= 1
-      @children = instructions
+    if instructions.length <= 1 and instructions[0].template == parent_common
+      @children = instructions[0]
       return
     end
     @common = ~0
@@ -44,7 +42,7 @@ class Parser
       end
     end
     @children = children.map { |bits, group|
-      [bits, Parser.send(:new, group, settings)] }.to_h
+      [bits, Parser.send(:new, group, settings, @common)] }.to_h
   end
 
   def gen_func_wrapper(body)
@@ -62,13 +60,12 @@ class Parser
   end
 
   def print_child
-    case @children.length
-    when 0
-      ""
-    when 1
+    if @children.is_a? Hash
+      gen_switch("#{gen_child_cases} #{gen_default}")
+    elsif @children.is_a? Instruction
       gen_return
     else
-      gen_switch("#{gen_child_cases} #{gen_default}")
+      ""
     end
   end
 
@@ -90,7 +87,7 @@ class Parser
   end
 
   def gen_return
-    instr = @children[0]
+    instr = @children
     params = instr.params
     args = instr.params.map{ |p| gen_get_arg(p) }
     if @settings[:instr_prefix]
@@ -126,7 +123,7 @@ class Parser
   end
 
   def gen_get_arg(param)
-    instr = @children[0]
+    instr = @children
     push_top = 0
     arg = []
     param.reverse.each do |area|
