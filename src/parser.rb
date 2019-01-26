@@ -98,7 +98,7 @@ class Parser
     else
       prefix = nil
     end
-    "#{@settings[:do_instr]}(#{instr.name},(#{prefix}#{
+    "#{@settings[:do_instr]}(#{instr.name},#{args.length},(#{prefix}#{
       args.join(',')
     }));"
   end

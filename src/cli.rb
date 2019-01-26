@@ -1,7 +1,7 @@
 require "optparse"
 
 def get_settings(argv)
-  version = [0,0,4]
+  version = [0,1,4]
 
   settings = {
     input_file: STDIN,

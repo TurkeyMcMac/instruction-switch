@@ -5,7 +5,7 @@ int codepoint(const char *ch)
 {
 	unsigned instr = ntohl(*(unsigned *)ch);
 #define INSTR_ instr
-#define DO_INSTR_(_, bits) return bits;
+#define DO_INSTR_(name, n_args, bits) return bits;
 #define DO_ERROR_ return -1;
 #include "utf8.switch"
 #undef INSTR_
