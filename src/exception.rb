@@ -1,4 +1,4 @@
-class FixableException < RuntimeError
+class UserInputError < RuntimeError
   def initialize(message)
     @message = message
   end

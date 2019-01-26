@@ -3,7 +3,7 @@ def read_table(file)
     file = File.open(file)
   end
   lines = file.read.lines.map { |line| line.strip.split("\t") }
-  raise FixableException.new("Empty instruction table.") if lines.length <= 1
+  raise UserInputError.new("Empty instruction table.") if lines.length <= 1
   header = lines.shift
   n_columns = header.length
   name_col = format_col = nil
@@ -15,8 +15,8 @@ def read_table(file)
       format_col = i
     end
   end
-  raise FixableException.new("No 'name' column.") unless defined? name_col
-  raise FixableException.new("No 'format' column.") unless defined? format_col
+  raise UserInputError.new("No 'name' column.") unless defined? name_col
+  raise UserInputError.new("No 'format' column.") unless defined? format_col
   size = 0
   lines.each do |cells|
     len = cells[format_col].length
@@ -32,7 +32,7 @@ def read_table(file)
   when 17..32 then 32
   when 33..64 then 64
   else
-    raise FixableException.new(
+    raise UserInputError.new(
       "Invalid instruction size. Must be from 1 to 64 (inclusive.)")
   end
   lines.each_with_index.map { |cells, i| Instruction.new(

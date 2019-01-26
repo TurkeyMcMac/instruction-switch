@@ -4,7 +4,7 @@ class Parser
   def self.create(instructions, settings)
     instructions.permutation(2).each do |instr1, instr2|
       if (instr1.bits ^ instr2.bits) & (instr1.template & instr2.template) == 0
-        raise FixableException.new([
+        raise UserInputError.new([
           "Undecideable switch cases due to case #{instr2},",
           "indistinguishable from #{instr1}",
         ].join(' '))

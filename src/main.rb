@@ -12,7 +12,7 @@ begin
     output = File.open(output, "w")
   end
   output.puts(code)
-rescue FixableException, OptionParser::ParseError => e
+rescue UserInputError, OptionParser::ParseError => e
   STDERR.puts "#{$0}: #{e}"
   exit 1
 end
