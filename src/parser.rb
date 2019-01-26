@@ -27,10 +27,8 @@ class Parser
       @children = instructions[0]
       return
     end
-    @common = ~0
-    instructions.each_with_index.each do |instr, i|
-      @common &= instr.template
-    end
+    @common = instructions.inject(~0) { |common, instr|
+      common & instr.template }
     children = {}
     instructions.each do |instr|
       bits = instr.bits & @common
